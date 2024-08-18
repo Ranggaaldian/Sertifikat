@@ -10,11 +10,16 @@
         android:label="sertifikasi_jmp_kp3"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        
+
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAms7CW-P1LXXSHcg7ZMQ1Erxwp1asUUdw" />
+
         <!-- Metadata untuk penggunaan lokasi -->
         <meta-data
             android:name="com.google.android.gms.location.reporting"
-            android:value="true"/>
+            android:value="true" />
 
         <!-- Konfigurasi MainActivity -->
         <activity
@@ -26,12 +31,12 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"
+            />
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
