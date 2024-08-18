@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BuyerDataPage extends StatefulWidget {
+  const BuyerDataPage({super.key});
+
   @override
-  _BuyerDataPageState createState() => _BuyerDataPageState();
+  State<BuyerDataPage> createState() => _BuyerDataPageState();
 }
 
 class _BuyerDataPageState extends State<BuyerDataPage> {
@@ -30,8 +32,16 @@ class _BuyerDataPageState extends State<BuyerDataPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Data Pembeli'),
+        title: Text(
+          'Data Pembeli',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
         backgroundColor: Colors.brown,
+        leading: BackButton(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),

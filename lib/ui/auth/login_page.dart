@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sertifikasi_jmp_kp3/user_auth/firebase_auth.dart';
-import 'package:sertifikasi_jmp_kp3/user_auth/sign_up.dart';
-import 'package:sertifikasi_jmp_kp3/user_auth/form_container.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:sertifikasi_jmp_kp3/service/firebase_auth_service.dart';
+import 'package:sertifikasi_jmp_kp3/ui/user_auth/sign_up.dart';
+import 'package:sertifikasi_jmp_kp3/ui/user_auth/form_container.dart';
 import 'package:sertifikasi_jmp_kp3/global/toast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sertifikasi_jmp_kp3/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -20,8 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _isSigning = false;
   final FirebaseAuthService _auth = FirebaseAuthService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(""),
+        title: const Text(""),
       ),
       body: Center(
         child: Padding(
@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "Cake Butter with Bakeryy",
                       style: TextStyle(
                           fontFamily: 'Poppins',
@@ -58,28 +58,30 @@ class _LoginPageState extends State<LoginPage> {
                     Text(
                       "So Crayz Taste and price",
                       style: TextStyle(
-                          fontFamily: 'Poppins',
-                          color: Colors.grey[600],
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal),
+                        fontFamily: 'Poppins',
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
                     Text(
                       "Your comfort is our priority",
                       style: TextStyle(
-                          fontFamily: 'Poppins',
-                          color: Colors.grey[600],
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal),
+                        fontFamily: 'Poppins',
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
-                    Image(
-                      image: AssetImage('images/login.png'),
+                    SvgPicture.asset(
+                      "assets/images/logo.svg",
                       height: 200,
                       width: 200,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     FormContainerWidget(
@@ -88,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                       isPasswordField: false,
                       icon: Icons.email,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     FormContainerWidget(
@@ -97,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                       isPasswordField: true,
                       icon: Icons.lock,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     GestureDetector(
@@ -113,10 +115,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         child: Center(
                           child: _isSigning
-                              ? CircularProgressIndicator(
+                              ? const CircularProgressIndicator(
                                   color: Colors.white,
                                 )
-                              : Text(
+                              : const Text(
                                   "Login",
                                   style: TextStyle(
                                     color: Colors.white,
@@ -126,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     GestureDetector(
@@ -140,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                           color: const Color.fromARGB(255, 227, 84, 73),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Center(
+                        child: const Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -163,14 +165,14 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Don't have an account?"),
-                        SizedBox(
+                        const Text("Don't have an account?"),
+                        const SizedBox(
                           width: 5,
                         ),
                         GestureDetector(
@@ -178,11 +180,11 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SignUpPage()),
+                                  builder: (context) => const SignUpPage()),
                               (route) => false,
                             );
                           },
-                          child: Text(
+                          child: const Text(
                             "Sign Up",
                             style: TextStyle(
                               color: Colors.blue,
@@ -218,7 +220,9 @@ class _LoginPageState extends State<LoginPage> {
 
     if (user != null) {
       showToast(message: "User is successfully signed in");
-      Navigator.pushNamed(context, "/home");
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool("isLoggedIn", true);
+      Navigator.pushReplacementNamed(context, "/home");
     } else {
       showToast(message: "Some error occurred");
     }

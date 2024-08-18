@@ -6,15 +6,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CheckoutPage extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
 
-  CheckoutPage({required this.cartItems});
+  const CheckoutPage({
+    super.key,
+    required this.cartItems,
+  });
 
   @override
-  _CheckoutPageState createState() => _CheckoutPageState();
+  State<CheckoutPage> createState() => _CheckoutPageState();
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
   // Mengelompokkan item yang sama
-  Map<String, Map<String, dynamic>> _groupedItems = {};
+  final Map<String, Map<String, dynamic>> _groupedItems = {};
 
   @override
   void initState() {
@@ -55,8 +58,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checkout'),
+        title: Text(
+          'Checkout',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
         backgroundColor: Colors.brown,
+        leading: BackButton(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
       ),
       body: Column(
         children: [
@@ -66,11 +77,19 @@ class _CheckoutPageState extends State<CheckoutPage> {
               itemBuilder: (context, index) {
                 final item = _groupedItems.values.elementAt(index);
                 return ListTile(
-                  leading: Image.network(item['image'], width: 50, height: 50),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.network(
+                      item['image'],
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                   title: Text(item['name']),
                   subtitle: Text('${item['price']} x ${item['quantity']}'),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
+                    icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () {
                       _removeItem(item['name']);
                     },
@@ -93,10 +112,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         ),
                       );
                     },
-              child: Text('Pembayaran'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown,
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 12,
+                ),
+              ),
+              child: Text(
+                'Pembayaran',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
               ),
             ),
           ),
@@ -109,21 +136,31 @@ class _CheckoutPageState extends State<CheckoutPage> {
 class PaymentPage extends StatefulWidget {
   final List<Map<String, dynamic>> cartItems;
 
-  PaymentPage({required this.cartItems});
+  const PaymentPage({
+    super.key,
+    required this.cartItems,
+  });
 
   @override
-  _PaymentPageState createState() => _PaymentPageState();
+  State<PaymentPage> createState() => _PaymentPageState();
 }
 
 class _PaymentPageState extends State<PaymentPage> {
+  bool isGpsServiceEnabled = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   String _currentAddress = 'Mengambil lokasi...';
 
   @override
   void initState() {
-    super.initState();
+    _checkGps();
     _determinePosition();
+    super.initState();
+  }
+
+  Future<void> _checkGps() async {
+    isGpsServiceEnabled = await Geolocator.isLocationServiceEnabled();
   }
 
   Future<void> _determinePosition() async {
@@ -192,34 +229,85 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Payment'),
+        title: Text(
+          'Payment',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
         backgroundColor: Colors.brown,
+        leading: BackButton(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Nama'),
-            ),
-            TextField(
-              controller: _phoneController,
-              decoration: InputDecoration(labelText: 'Nomor Telepon'),
-              keyboardType: TextInputType.phone,
-            ),
-            SizedBox(height: 20),
-            Text('Alamat: $_currentAddress'),
-            Spacer(),
-            ElevatedButton(
-              onPressed: () async {
-                await _saveData();
-                Navigator.pop(context); // Kembali ke halaman sebelumnya
-              },
-              child: Text('Simpan dan Kembali'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
-            ),
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _nameController,
+                validator: (value) =>
+                    value!.isEmpty ? 'Nama tidak boleh kosong' : null,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: const InputDecoration(
+                  labelText: 'Nama',
+                ),
+              ),
+              TextFormField(
+                controller: _phoneController,
+                validator: (value) =>
+                    value!.isEmpty ? 'Nomor Telepon tidak boleh kosong' : null,
+                decoration: const InputDecoration(labelText: 'Nomor Telepon'),
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 20),
+              Text('Alamat: $_currentAddress'),
+              const Spacer(),
+              ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Konfirmasi'),
+                          content: const Text(
+                              'Apakah Anda yakin ingin menyimpan data?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Batal'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                await _saveData();
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Ya'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                  // ignore: use_build_context_synchronously
+                  // Navigator.pop(context); // Kembali ke halaman sebelumnya
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.brown),
+                child: Text(
+                  'Simpan dan Kembali',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

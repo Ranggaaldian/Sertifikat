@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import untuk membuka URL
 
@@ -7,7 +9,8 @@ class ItemDetailPage extends StatelessWidget {
   final String image;
   final String description;
 
-  ItemDetailPage({
+  const ItemDetailPage({
+    super.key,
     required this.name,
     required this.price,
     required this.image,
@@ -15,9 +18,14 @@ class ItemDetailPage extends StatelessWidget {
   });
 
   void _launchMap() async {
-    const url = 'https://www.google.com/maps?q=toko+roti+terdekat'; // URL Google Maps
-    if (await canLaunch(url)) {
-      await launch(url);
+    const url =
+        'https://www.google.com/maps?q=toko+roti+terdekat'; // URL Google Maps
+    if (await canLaunchUrl(
+      Uri.parse(url),
+    )) {
+      await launchUrl(
+        Uri.parse(url),
+      );
     } else {
       throw 'Could not launch $url';
     }
@@ -27,12 +35,20 @@ class ItemDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+        title: Text(
+          name,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
         backgroundColor: Colors.brown, // Warna background AppBar
+        leading: BackButton(
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
       ),
       backgroundColor: Colors.brown[50], // Warna background halaman
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -45,7 +61,7 @@ class ItemDetailPage extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               name,
               style: TextStyle(
@@ -54,7 +70,7 @@ class ItemDetailPage extends StatelessWidget {
                 color: Colors.brown[800],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               price,
               style: TextStyle(
@@ -62,7 +78,7 @@ class ItemDetailPage extends StatelessWidget {
                 color: Colors.brown[600],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               description,
               style: TextStyle(
@@ -71,8 +87,8 @@ class ItemDetailPage extends StatelessWidget {
               ),
               textAlign: TextAlign.justify,
             ),
-            SizedBox(height: 16),
-            Spacer(), // Menambahkan spacer untuk mendorong tombol ke bawah
+            const SizedBox(height: 16),
+            const Spacer(), // Menambahkan spacer untuk mendorong tombol ke bawah
             ElevatedButton(
               onPressed: () {
                 // Mengirimkan data item kembali ke halaman sebelumnya
@@ -82,13 +98,18 @@ class ItemDetailPage extends StatelessWidget {
                   'image': image,
                 });
               },
-              child: Text('Buy Now'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown, // Warna tombol
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                textStyle: TextStyle(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                textStyle: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+                ),
+              ),
+              child: Text(
+                'Buy Now',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
             ),
@@ -102,24 +123,24 @@ class ItemDetailPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Temukan Toko Roti Kami',
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               IconButton(
-                icon: Icon(Icons.map, color: Colors.white),
-                onPressed: _launchMap, // Arahkan ke Google Maps
+                icon: const Icon(Icons.map, color: Colors.white),
+                onPressed: () {
+                  if (Platform.isWindows) {
+                    _launchMap; // Arahkan ke Google Maps
+                  } else {
+                    Navigator.pushNamed(context, '/map');
+                  }
+                }
               ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.brown,
-        child: Icon(Icons.map),
-        onPressed: _launchMap, // Arahkan ke Google Maps
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }

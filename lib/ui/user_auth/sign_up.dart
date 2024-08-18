@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sertifikasi_jmp_kp3/user_auth/firebase_auth.dart';
-import 'package:sertifikasi_jmp_kp3/user_auth/login_page.dart';
-import 'package:sertifikasi_jmp_kp3/user_auth/form_container.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sertifikasi_jmp_kp3/service/firebase_auth_service.dart';
+import 'package:sertifikasi_jmp_kp3/ui/auth/login_page.dart';
+import 'package:sertifikasi_jmp_kp3/ui/user_auth/form_container.dart';
 import 'package:sertifikasi_jmp_kp3/global/toast.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -15,9 +16,9 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
 
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   bool isSigningUp = false;
 
@@ -34,7 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(""),
+        title: const Text(""),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -43,33 +44,33 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image(
-                  image: AssetImage('images/daftar.png'),
+                SvgPicture.asset(
+                  "assets/images/logo.svg",
                   height: 300,
                   width: 300,
                 ),
-                SizedBox(height: 60),
+                const SizedBox(height: 60),
                 FormContainerWidget(
                   controller: _usernameController,
                   hintText: "Username",
                   isPasswordField: false,
                   icon: Icons.person, // Tambahkan ikon di sini
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 FormContainerWidget(
                   controller: _emailController,
                   hintText: "Email",
                   isPasswordField: false,
                   icon: Icons.email, // Tambahkan ikon di sini
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 FormContainerWidget(
                   controller: _passwordController,
                   hintText: "Password",
                   isPasswordField: true,
                   icon: Icons.lock, // Tambahkan ikon di sini
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 GestureDetector(
                   onTap: () {
                     _signUp();
@@ -83,10 +84,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     child: Center(
                       child: isSigningUp
-                          ? CircularProgressIndicator(
+                          ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                          : Text(
+                          : const Text(
                               "Sign Up",
                               style: TextStyle(
                                 color: Colors.white,
@@ -96,21 +97,22 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Already have an account?"),
-                    SizedBox(width: 5),
+                    const Text("Already have an account?"),
+                    const SizedBox(width: 5),
                     GestureDetector(
                       onTap: () {
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
                           (route) => false,
                         );
                       },
-                      child: Text(
+                      child: const Text(
                         "Login",
                         style: TextStyle(
                           color: Colors.blue,
@@ -133,7 +135,6 @@ class _SignUpPageState extends State<SignUpPage> {
       isSigningUp = true;
     });
 
-    String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
 
@@ -144,6 +145,7 @@ class _SignUpPageState extends State<SignUpPage> {
     });
     if (user != null) {
       showToast(message: "User is successfully created");
+      // ignore: use_build_context_synchronously
       Navigator.pushNamed(context, "/home");
     } else {
       showToast(message: "Some error happened");
