@@ -7,6 +7,7 @@ import 'package:sertifikasi_jmp_kp3/user_auth/form_container.dart';
 import 'package:sertifikasi_jmp_kp3/global/toast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sertifikasi_jmp_kp3/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -48,14 +49,14 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Start Your Trading with Trade Vibe",
+                      "Cake Butter with Bakeryy",
                       style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 20,
                           fontWeight: FontWeight.w600),
                     ),
                     Text(
-                      "Get discount and spesial for new member",
+                      "So Crayz Taste and price",
                       style: TextStyle(
                           fontFamily: 'Poppins',
                           color: Colors.grey[600],

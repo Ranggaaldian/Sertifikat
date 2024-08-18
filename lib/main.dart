@@ -24,14 +24,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'NutriScan',
+      title: 'Cake by Ranggo',
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.orange),
       routes: {
         '/': (context) => SplashScreen(),
         '/login': (context) => LoginPage(),
         '/signUp': (context) => SignUpPage(),
         // '/setting': (context) => SettingPage(),
-        // '/home': (context) => HomePage(),
+        '/home': (context) => HomePage(role: 'user'),
       },
     );
   }

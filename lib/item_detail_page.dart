@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // Import untuk membuka URL
 
 class ItemDetailPage extends StatelessWidget {
   final String name;
@@ -12,6 +13,15 @@ class ItemDetailPage extends StatelessWidget {
     required this.image,
     required this.description,
   });
+
+  void _launchMap() async {
+    const url = 'https://www.google.com/maps?q=toko+roti+terdekat'; // URL Google Maps
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +95,31 @@ class ItemDetailPage extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.brown,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Temukan Toko Roti Kami',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              IconButton(
+                icon: Icon(Icons.map, color: Colors.white),
+                onPressed: _launchMap, // Arahkan ke Google Maps
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.brown,
+        child: Icon(Icons.map),
+        onPressed: _launchMap, // Arahkan ke Google Maps
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }
