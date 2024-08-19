@@ -1,20 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:sertifikasi_jmp_kp3/data/model/product.dart';
 import 'package:url_launcher/url_launcher.dart'; // Import untuk membuka URL
 
 class ItemDetailPage extends StatelessWidget {
-  final String name;
-  final String price;
-  final String image;
-  final String description;
+  final Product product;
 
   const ItemDetailPage({
     super.key,
-    required this.name,
-    required this.price,
-    required this.image,
-    required this.description,
+    required this.product,
   });
 
   void _launchMap() async {
@@ -36,7 +31,7 @@ class ItemDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          name,
+          product.name ?? 'Tidak ada nama produk',
           style: TextStyle(
             color: Theme.of(context).colorScheme.onPrimary,
           ),
@@ -55,7 +50,7 @@ class ItemDetailPage extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: Image.network(
-                image,
+                product.imageUrl ?? '',
                 width: double.infinity,
                 height: 200,
                 fit: BoxFit.cover,
@@ -63,7 +58,7 @@ class ItemDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              name,
+              product.name ?? 'Tidak ada nama produk',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -72,7 +67,7 @@ class ItemDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              price,
+              'Rp ${product.price ?? 'Tidak ada harga'}',
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.brown[600],
@@ -80,7 +75,7 @@ class ItemDetailPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              description,
+              product.description ?? 'Tidak ada deskripsi',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.brown[700],
@@ -92,11 +87,12 @@ class ItemDetailPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Mengirimkan data item kembali ke halaman sebelumnya
-                Navigator.pop(context, {
-                  'name': name,
-                  'price': price,
-                  'image': image,
-                });
+                Navigator.pop(context, Product(
+                  name: product.name,
+                  price: product.price,
+                  imageUrl: product.imageUrl,
+                  description: product.description,
+                ));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.brown, // Warna tombol
