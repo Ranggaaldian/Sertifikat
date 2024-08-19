@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:sertifikasi_jmp_kp3/ui/home/home_page.dart';
 import 'package:sertifikasi_jmp_kp3/ui/auth/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,10 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _handleUserLoginStatus() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-    if (isLoggedIn) {
+    if (isLoggedIn && user != null) {
       await _handleUserRole();
     } else {
       Navigator.pushReplacement(
@@ -54,11 +55,11 @@ class _SplashScreenState extends State<SplashScreen> {
           (value) => value.docs.first.data()['role'],
         );
 
-    Navigator.pushReplacementNamed(
-      context,
-      '/main',
-      arguments: role,
-    );
+    if (role == 'admin') {
+      Navigator.pushReplacementNamed(context, '/admin');
+    } else {
+      Navigator.pushReplacementNamed(context, '/main');
+    }
   }
 
   @override

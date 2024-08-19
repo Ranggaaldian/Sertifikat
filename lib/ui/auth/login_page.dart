@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
@@ -204,6 +205,30 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Future<void> _handleUserByRole() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    String role = await firestore
+        .collection('users')
+        .where('uid', isEqualTo: auth.currentUser!.uid)
+        .get()
+        .then(
+          (value) => value.docs.first.data()['role'],
+        );
+
+    if (role == "admin") {
+      Navigator.pushReplacementNamed(
+        context,
+        '/admin',
+      );
+    } else {
+      Navigator.pushReplacementNamed(
+        context,
+        '/main',
+      );
+    }
+  }
+
   void _signIn() async {
     setState(() {
       _isSigning = true;
@@ -222,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
       showToast(message: "User is successfully signed in");
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool("isLoggedIn", true);
-      Navigator.pushReplacementNamed(context, "/home");
+      _handleUserByRole();
     } else {
       showToast(message: "Some error occurred");
     }
@@ -245,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         await _firebaseAuth.signInWithCredential(credential);
-        Navigator.pushNamed(context, "/home");
+        Navigator.pushNamed(context, "/main");
       }
     } catch (e) {
       showToast(message: "Some error occurred $e");
