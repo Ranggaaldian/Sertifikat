@@ -24,7 +24,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    String role = ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,

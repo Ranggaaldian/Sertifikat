@@ -1,17 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   void _register() async {
     if (_formKey.currentState!.validate()) {
@@ -20,6 +24,11 @@ class _RegisterPageState extends State<RegisterPage> {
           email: _emailController.text,
           password: _passwordController.text,
         );
+        await FirebaseFirestore.instance.collection('users').add({
+          'role': 'user',
+          'uid': FirebaseAuth.instance.currentUser!.uid,
+          'username': _emailController.text,
+        });
         Fluttertoast.showToast(msg: "Registration successful");
       } on FirebaseAuthException catch (e) {
         Fluttertoast.showToast(msg: e.message ?? "Registration failed");

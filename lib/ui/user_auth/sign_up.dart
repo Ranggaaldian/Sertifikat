@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -108,7 +109,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
+                            builder: (context) => const LoginPage(),
+                          ),
                           (route) => false,
                         );
                       },
@@ -138,7 +140,17 @@ class _SignUpPageState extends State<SignUpPage> {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+    User? user = await _auth.signUpWithEmailAndPassword(
+      email,
+      password,
+    );
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await firestore.collection('users').add({
+      'role': 'user',
+      'uid': FirebaseAuth.instance.currentUser!.uid,
+      'username': _usernameController.text,
+    });
 
     setState(() {
       isSigningUp = false;
@@ -146,7 +158,7 @@ class _SignUpPageState extends State<SignUpPage> {
     if (user != null) {
       showToast(message: "User is successfully created");
       // ignore: use_build_context_synchronously
-      Navigator.pushNamed(context, "/home");
+      Navigator.pushReplacementNamed(context, "/login");
     } else {
       showToast(message: "Some error happened");
     }
