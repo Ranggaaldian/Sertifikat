@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sertifikasi_jmp_kp3/ui/home/home_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sertifikasi_jmp_kp3/ui/map/map_page.dart';
 import 'package:sertifikasi_jmp_kp3/ui/auth/login_page.dart';
@@ -7,6 +6,8 @@ import 'package:sertifikasi_jmp_kp3/ui/main/main_page.dart';
 import 'package:sertifikasi_jmp_kp3/ui/user_auth/sign_up.dart';
 import 'package:sertifikasi_jmp_kp3/ui/user_auth/splash_screen.dart';
 import 'package:sertifikasi_jmp_kp3/config/firebase_options.dart';
+
+import 'ui/admin/admin_page.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/signUp': (context) => const SignUpPage(),
         '/main': (context) => const MainPage(),
+        '/admin': (context) => const AdminPage(),
         '/map': (context) => const MapPage(),
       },
     );
